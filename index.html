@@ -1,38 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Pbsphp.github.io by pbsphp</title>
+    <meta charset="utf-8" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <script>
+
+// Initialize canvas
+canvasElement = null;
+ctx = null;
+
+
+// Array of YOBAS
+YOBAS = [];
+
+
+
+
+// Every 100ms render Yobas
+setInterval(function(){
+
+  var π = Math.PI;  // Math.PI alias
+
+  // Clear screen before render
+  ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+  for(var i = 0; i < YOBAS.length; ++i) {
+    var y = YOBAS[i];
+
+
+    // Local vars
+    var X0 = y.position - y.radius; // TODO: what if params.position is 0?
+    var Y0 = canvasElement.height - 2 * y.radius;
+    var R = y.radius;
+
+    var Δφ = 2 * π + y.direction * (y.speed / R);    // Angle increment, Δφ
+
+
+    // Calculate direction and next position
+
+    // If Yoba at begin or end
+    if(y.position + R + y.speed > canvasElement.width ||
+       y.position - R - y.speed < 0)
+            y.direction = -y.direction;
+
+
+    var ΔX = y.direction * y.speed;
+
+    var φ = y.angle + Δφ;
+
+
+    // Rotate and draw
+    ctx.save();
+    ctx.translate(X0 + ΔX, Y0);
+
+    ctx.translate(R, R);
+    ctx.rotate(φ);
+    ctx.drawImage(YOBAS[0].src, -R, -R, 2 * R, 2 * R);
+
+    ctx.restore();
+
+    y.angle = φ % (4 * π);
+    y.position += ΔX;
+  }
+
+
+}, 60);
+
+
+function Yoba(params)
+{
+
+  var yobaImage = new Image();
+  yobaImage.src = "yoba_image.png";
+
+  // Rotate yoba
+  YOBAS.push({
+          src:        yobaImage,
+          position:   params.position,
+          radius:     params.radius,
+          speed:      params.speed,
+          angle:      0,
+          direction:  1,
+  });
+}
+
+
+
+function drawYobas()
+{
+    // Initialize canvas
+  canvasElement = document.getElementById("yoba_track");
+  ctx = canvasElement.getContext("2d");
+
+  new Yoba({ radius: 50, position: 100, speed: 10 });
+
+  new Yoba({ radius: 50, position: 300, speed: 10 });
+}
+
+    </script>
+
   </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Pbsphp.github.io</h1>
-        <p>test test test test</p>
+  <body onload="drawYobas()">
 
+    <canvas id="yoba_track" width="1000" height="150">Sosnooley</canvas>
 
-        <p class="view"><a href="https://github.com/pbsphp">View My GitHub Profile</a></p>
-
-      </header>
-      <section>
-        <p>ЖОПАЖОПА</p>
-
-        <img src='http://cs304111.vk.me/u166320423/-6/x_f1268337.jpg' alt='' />
-
-      </section>
-      <footer>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
   </body>
 </html>
