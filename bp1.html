@@ -38,16 +38,16 @@ function moveYobas()
         ΔS = y.speed;
 
     // Calculate angle and angle increment
-    var Δφ = 2 * π + (ΔS / R);
+    var Δφ = 2 * π + y.direction * (ΔS / R);
     var φ = y.angle + Δφ;
 
 
     // Calculate direction and next position
 
     // If Yoba at begin or end
-    if(y.position + R + ΔS >= canvasElement.width ||
-       y.position - R + ΔS <= 0)
-            y.speed = -y.speed;
+    if(y.position + R + ΔS > canvasElement.width ||
+       y.position - R - ΔS < 0)
+            y.direction = -y.direction; // Switch direction
 
 
     // Check to other Yobas on the way
@@ -55,20 +55,20 @@ function moveYobas()
 
     for(var i = 0; i < YOBAS.length; ++i) {
       if(i != yobaIndex) {
-        var oR = YOBAS[i].position + YOBAS[i].radius + YOBAS[i].speed,
-            oL = YOBAS[i].position - YOBAS[i].radius + YOBAS[i].speed,
-            yR = y.position + R + ΔS,
-            yL = y.position - R + ΔS;
+        var oR = YOBAS[i].position + YOBAS[i].radius,
+            oL = YOBAS[i].position - YOBAS[i].radius,
+            yR = y.position + R,
+            yL = y.position - R;
 
         if(yR >= oL && yR <= oR || yR <= oR && yR >= oL)
-          thereIsYoba = i;
+              thereIsYoba = i;
       }
     }
 
     if(thereIsYoba != -1) {
       // Switch directions
-      // y.speed = -y.speed;
-      // YOBAS[thereIsYoba].speed = -YOBAS[thereIsYoba].speed;
+      y.direction = -y.direction;
+      YOBAS[thereIsYoba].direction = -YOBAS[thereIsYoba].direction;
 
       // Calculate impulse speeds
       var m1 = y.radius,
@@ -76,20 +76,20 @@ function moveYobas()
           v1 = y.speed,
           v2 = YOBAS[thereIsYoba].speed;
 
-      var v11 = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2),
-          v21 = (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2);
+      var v = (m1 * v1 + m2 * v2) / (m1 + m2);
 
-      console.log(v11, v21);
-
-      y.speed = v11;
-      YOBAS[thereIsYoba].speed = v21;
+      y.speed = v;
+      YOBAS[thereIsYoba].speed = v;
     }
 
-// TODO: rename X0 -> S0
+
+
+    var ΔX = y.direction * ΔS;
+
 
     // Rotate and draw
     ctx.save();
-    ctx.translate(X0 + ΔS, Y0);
+    ctx.translate(X0 + ΔX, Y0);
 
     ctx.translate(R, R);
     ctx.rotate(φ);
@@ -98,7 +98,7 @@ function moveYobas()
     ctx.restore();
 
     y.angle = φ % (4 * π);
-    y.position += ΔS;
+    y.position += ΔX;
   }
 
 }
@@ -143,8 +143,8 @@ function drawYobas()
   ctx = canvasElement.getContext("2d");
 
   // Create Yobas
-  new Yoba({ radius: 40, position: 100, speed: 10 });
-  new Yoba({ radius: 40, position: 300, speed: -15 });
+  new Yoba({ radius: 30, position: 100, speed: 25 });
+  new Yoba({ radius: 80, position: 300, speed: 5 });
   // new Yoba({ radius: 60, position: 900, speed: 25 });
 
 
