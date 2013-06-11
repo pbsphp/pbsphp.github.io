@@ -5,48 +5,52 @@
 
     <script>
 
-// Initialize canvas
+/* Initialize canvas */
 canvasElement = null;
 ctx = null;
 
 
-// Array of YOBAS
+/* Array of YOBAS */
 YOBAS = [];
 
 
+function moveYobas()
+{
 
+  /*
+    Rotate and move all Yobas
+  */
 
-// Every 100ms render Yobas
-setInterval(function(){
 
   var π = Math.PI;  // Math.PI alias
 
   // Clear screen before render
   ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
+  // For each Yoba
   for(var i = 0; i < YOBAS.length; ++i) {
     var y = YOBAS[i];
 
+    // Aliases
+    var X0 = y.position - y.radius, // TODO: what if params.position < R?
+        Y0 = canvasElement.height - 2 * y.radius,
+        R  = y.radius,
+        ΔS = y.speed;
 
-    // Local vars
-    var X0 = y.position - y.radius; // TODO: what if params.position is 0?
-    var Y0 = canvasElement.height - 2 * y.radius;
-    var R = y.radius;
-
-    var Δφ = 2 * π + y.direction * (y.speed / R);    // Angle increment, Δφ
+    // Calculate angle and angle increment
+    var Δφ = 2 * π + y.direction * (ΔS / R);
+    var φ = y.angle + Δφ;
 
 
     // Calculate direction and next position
 
     // If Yoba at begin or end
-    if(y.position + R + y.speed > canvasElement.width ||
-       y.position - R - y.speed < 0)
-            y.direction = -y.direction;
+    if(y.position + R + ΔS > canvasElement.width ||
+       y.position - R - ΔS < 0)
+            y.direction = -y.direction; // Switch direction
 
 
-    var ΔX = y.direction * y.speed;
-
-    var φ = y.angle + Δφ;
+    var ΔX = y.direction * ΔS;
 
 
     // Rotate and draw
@@ -63,12 +67,19 @@ setInterval(function(){
     y.position += ΔX;
   }
 
-
-}, 60);
+}
 
 
 function Yoba(params)
 {
+
+  /*
+    Yoba constructor
+
+    Initialize Yoba and render to canvas,
+    call (new Yoba()) for create new Yoba
+  */
+
 
   var yobaImage = new Image();
   yobaImage.src = "yoba_image.png";
@@ -88,13 +99,22 @@ function Yoba(params)
 
 function drawYobas()
 {
-    // Initialize canvas
+  /*
+    Initialize canvas, screen, Yobas, render Yobas
+  */
+
+
+  // Initialize canvas
   canvasElement = document.getElementById("yoba_track");
   ctx = canvasElement.getContext("2d");
 
+  // Create Yobas
   new Yoba({ radius: 50, position: 100, speed: 10 });
+  new Yoba({ radius: 50, position: 300, speed: 15 });
 
-  new Yoba({ radius: 50, position: 300, speed: 10 });
+  // Rotate and Yobas, render every 60ms
+  setInterval(moveYobas, 60);
+
 }
 
     </script>
