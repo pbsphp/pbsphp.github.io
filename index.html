@@ -8,7 +8,7 @@
 /* Initialize canvas */
 canvasElement = null;
 ctx = null;
-
+// TODO: make var
 
 /* Array of YOBAS */
 YOBAS = [];
@@ -28,8 +28,8 @@ function moveYobas()
   ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
   // For each Yoba
-  for(var i = 0; i < YOBAS.length; ++i) {
-    var y = YOBAS[i];
+  for(var yobaIndex = 0; yobaIndex < YOBAS.length; ++yobaIndex) {
+    var y = YOBAS[yobaIndex];
 
     // Aliases
     var X0 = y.position - y.radius, // TODO: what if params.position < R?
@@ -48,6 +48,37 @@ function moveYobas()
     if(y.position + R + ΔS > canvasElement.width ||
        y.position - R - ΔS < 0)
             y.direction = -y.direction; // Switch direction
+
+
+    // Check to other Yobas on the way
+    var thereIsYoba = -1; // TODO: rename
+
+    for(var i = 0; i < YOBAS.length; ++i) {
+      if(i != yobaIndex) {
+        var oR = YOBAS[i].position + YOBAS[i].radius,
+            oL = YOBAS[i].position - YOBAS[i].radius,
+            yR = y.position + R,
+            yL = y.position - R;
+
+
+        // if(y.direction == 1) // No magic numbers
+        //   if(y.position + R >= oyX - oyR && y.position - R <= )
+        //     thereIsYoba = i;
+        // else
+        //   if(y.position - R <= oyX + oyR)
+        //     thereIsYoba = i;
+
+        if(yR >= oL && yR <= oR || yR <= oR && yR >= oL)
+              thereIsYoba = i;
+
+      }
+    }
+
+    if(thereIsYoba != -1) {
+      y.direction = -y.direction;
+      YOBAS[thereIsYoba].direction = -YOBAS[thereIsYoba].direction;
+    }
+
 
 
     var ΔX = y.direction * ΔS;
@@ -111,6 +142,8 @@ function drawYobas()
   // Create Yobas
   new Yoba({ radius: 50, position: 100, speed: 10 });
   new Yoba({ radius: 50, position: 300, speed: 15 });
+  new Yoba({ radius: 60, position: 900, speed: 25 });
+
 
   // Rotate and Yobas, render every 60ms
   setInterval(moveYobas, 60);
@@ -122,7 +155,7 @@ function drawYobas()
   </head>
   <body onload="drawYobas()">
 
-    <canvas id="yoba_track" width="1000" height="150">Sosnooley</canvas>
+    <canvas id="yoba_track" width="1000" height="150"></canvas>
 
   </body>
 </html>
