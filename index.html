@@ -3,12 +3,19 @@
   <head>
     <meta charset="utf-8" />
 
+
+    <style>
+#yoba_track {
+  border-bottom: 1px solid black;
+}
+    </style>
+
     <script>
 
 /* Initialize canvas */
-canvasElement = null;
-ctx = null;
-// TODO: make var
+var canvasElement = null;
+var ctx = null;
+
 
 /* Array of YOBAS */
 YOBAS = [];
@@ -27,67 +34,96 @@ function moveYobas()
   // Clear screen before render
   ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-  // For each Yoba
+  // Calculate speed, position and direction for each Yoba
   for(var yobaIndex = 0; yobaIndex < YOBAS.length; ++yobaIndex) {
     var y = YOBAS[yobaIndex];
 
     // Aliases
+
     var X0 = y.position - y.radius, // TODO: what if params.position < R?
         Y0 = canvasElement.height - 2 * y.radius,
         R  = y.radius,
         ΔS = y.speed;
 
 
-
-    // If there are border - switch direction
+    // If Yoba has come to the edge
 
     if(y.position + R + ΔS >= canvasElement.width && ΔS > 0)
       ΔS = - Math.abs(ΔS);
+                              // Right border - move left
     else if(y.position - R + ΔS <= 0 && ΔS < 0)
       ΔS = + Math.abs(ΔS);
+                              // Left border - move right
 
 
     // Check to other Yobas on the way
-    var thereIsYoba = -1; // TODO: rename
 
+    var bumpedYobaIndex = -1;
+                        // The index of a nearby Yoba, which will be bumped
+
+    // Check positions of each Yoba
     for(var i = 0; i < YOBAS.length; ++i) {
-      if(i != yobaIndex) {
+      if(i != yobaIndex) { // Not check self
         var oR = YOBAS[i].position + YOBAS[i].radius + YOBAS[i].speed,
             oL = YOBAS[i].position - YOBAS[i].radius + YOBAS[i].speed,
             yR = y.position + R + ΔS,
             yL = y.position - R + ΔS;
 
+        // If there will be a collision
         if(yR >= oL && yR <= oR || yR <= oR && yR >= oL)
-          thereIsYoba = i;
+          bumpedYobaIndex = i;
+                            // Remember that Yoba's index
       }
     }
 
-    if(thereIsYoba != -1) {
 
-      // Calculate impulse speeds
+    if(bumpedYobaIndex != -1) { // If there will be a collision
+
+      // Calculate speeds after bump
+
       var m1 = y.radius,
-          m2 = YOBAS[thereIsYoba].radius,
+          m2 = YOBAS[bumpedYobaIndex].radius,
           v1 = y.speed,
-          v2 = YOBAS[thereIsYoba].speed;
+          v2 = YOBAS[bumpedYobaIndex].speed;
 
-      var v11 = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2),
-          v21 = (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2);
+      // p01 + p02 = p1 + p2
+      var v11 = ((m1 - m2) * v1 + 2 * m2 * v2) /
+                    (m1 + m2),
+
+          v21 = (2 * m1 * v1 + (m2 - m1) * v2) /
+                    (m1 + m2);
 
       ΔS = v11;
-      YOBAS[thereIsYoba].speed = v21;
+      YOBAS[bumpedYobaIndex].speed = v21;
     }
 
 
+
+    // Calculate the force of rolling friction and speed
+
+    var f = 0.3,
+        N = 9.8 * R;    // F = mg, Radius as mass, TODO: mass in params
+
+    var a = (N * (f / R)) / R;    // TODO: radius not needed?
+
+
+    // What the fuck? Rewrite this shit!
+    if(ΔS > 0)
+      ΔS -= (a);
+    else
+      ΔS += (a);
+
+
     // Calculate angle and angle increment
+
     var Δφ = 2 * π + (ΔS / R);
     var φ = y.angle + Δφ; // TODO: move down this block, depends dS
 
 
-// TODO: rename X0 -> S0
+    // Rotate and draw Yoba
 
-    // Rotate and draw
     ctx.save();
-    ctx.translate(X0 + ΔS, Y0);
+    ctx.translate(X0 + Math.round(ΔS), Y0);
 
     ctx.translate(R, R);
     ctx.rotate(φ);
@@ -95,9 +131,13 @@ function moveYobas()
 
     ctx.restore();
 
+    // Remember calculated variables
+
     y.angle = φ % (4 * π);
-    y.position += ΔS;
+    y.position += Math.round(ΔS);
+                              // Attention! position MUST be integer
     y.speed = ΔS;
+                              // Speed can be float
   }
 
 }
@@ -124,7 +164,6 @@ function Yoba(params)
           radius:     params.radius,
           speed:      params.speed,
           angle:      0,
-          direction:  1,
   });
 }
 
