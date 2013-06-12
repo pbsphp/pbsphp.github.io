@@ -108,15 +108,12 @@ function moveYobas()
 
 
     // What the fuck? Rewrite this shit!
-    if(ΔS > 0)
-      ΔS -= (a);
-    else
-      ΔS += (a);
+    ΔS -= (ΔS > 0) ? a : -a;
 
 
     // Calculate angle and angle increment
 
-    var Δφ = 2 * π + (ΔS / R);
+    var Δφ = 2 * π + (Math.round(ΔS) / R);
     var φ = y.angle + Δφ; // TODO: move down this block, depends dS
 
 
