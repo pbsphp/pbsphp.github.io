@@ -21,7 +21,7 @@ var scriptIntervalID = null;
 
 
 /* Array of YOBAS */
-YOBAS = [];
+var YOBAS = [];
 
 
 function moveYobas()
@@ -30,6 +30,7 @@ function moveYobas()
   /*
     Rotate and move all Yobas
   */
+  "use strict";
 
 
   var π = Math.PI;  // Math.PI alias
@@ -74,7 +75,8 @@ function moveYobas()
             yL = y.position - R + ΔS;
 
         // If there will be a collision
-        if(yR >= oL && yR <= oR || yR <= oR && yR >= oL)
+        // if(yR >= oL && yR <= oR || yR <= oR && yR >= oL)
+        if(yR >= oL && yR <= oR || yL <= oR && yL >= oL)
           bumpedYobaIndex = i;
                             // Remember that Yoba's index
       }
@@ -146,8 +148,8 @@ function moveYobas()
 
   // If all Yobas stopped spining, stop script
   var allYobasStop = true;
-  for(var i in YOBAS) {
-    if(Math.floor(YOBAS[i].speed) != 0) {
+  for(var i = 0; i < YOBAS.length; ++i) {
+    if(Math.floor(YOBAS[i].speed) !== 0) {
       allYobasStop = false;
       break;
     }
@@ -175,6 +177,7 @@ function Yoba(params)
     Initialize Yoba and render to canvas,
     call (new Yoba()) for create new Yoba
   */
+  "use strict";
 
 
   var yobaImage = new Image();
@@ -184,7 +187,7 @@ function Yoba(params)
   // Default params, will be used if some params undefined
   var defaultParams = {
     radius:     40,
-    speed:      Math.floor(Math.random() * 30 + 10),  // random: 10...40
+    speed:      Math.floor(Math.random() * 25 + 5),  // random: 5...30
     angle:      0
   };
 
@@ -192,8 +195,8 @@ function Yoba(params)
   // Calculate mass via radius
   var getMass = function(R)
   {
-    var μ = 0.0001;
-    return Math.floor((4.0 / 3.0) * Math.PI * R * R * R * μ);
+    var ρ = 0.0001;
+    return Math.floor((4.0 / 3.0) * Math.PI * R * R * R * ρ);
   };
 
 
@@ -215,16 +218,16 @@ function drawYobas()
   /*
     Initialize canvas, screen, Yobas, render Yobas
   */
-
+  "use strict";
 
   // Initialize canvas
   canvasElement = document.getElementById("yoba_track");
   ctx = canvasElement.getContext("2d");
 
   // Create Yobas
-  new Yoba({ radius: 50, position: 950, speed: 10 });
-  new Yoba({ radius: 40, position: 400, speed: 15 });
-  // new Yoba({ radius: 60, position: 900, speed: 25 });
+  new Yoba({ radius: 50, position: 950 });
+  new Yoba({ radius: 40, position: 400 });
+  new Yoba({ radius: 60, position: 100 });
 
 
   // Rotate and Yobas, render every 60ms
