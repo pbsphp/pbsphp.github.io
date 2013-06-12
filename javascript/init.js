@@ -10,9 +10,23 @@ function drawYobas()
   */
   "use strict";
 
+
+  // Clear variables after last using
+
+  // Stop drawing Yobas
+  if(scriptIntervalID)
+    clearInterval(scriptIntervalID);
+
+  YOBAS = [];
+
+
   // Initialize canvas
-  canvasElement = document.getElementById("yoba_track");
-  ctx = canvasElement.getContext("2d");
+  canvasElement = canvasElement || document.getElementById("yoba_track");
+  ctx           = ctx           || canvasElement.getContext("2d");
+
+  // Clear after last using
+  ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
 
   // Create Yobas
   new Yoba({ radius: 50, position: 950 });

@@ -166,11 +166,25 @@ function moveYobas()
     // Stop render Yobas
     clearInterval(scriptIntervalID);
     setTimeout(function() {
+
+      ctx.save();
+
+      // Show 'SASAI LOLKA'
       ctx.font = 'italic 40pt Calibri';
       ctx.shadowColor = 'orange';
       ctx.shadowOffsetX = 3;
       ctx.shadowOffsetY = 3;
       ctx.fillText('SASAI LOLKA', Math.floor(canvasElement.width * 0.30), 100);
+
+      // Show 'click to replay'
+      ctx.font = 'italic 10pt Calibri';
+      ctx.shadowColor = 'red';
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+      ctx.fillText('Click to replay', Math.floor(canvasElement.width * 0.50), 130);
+
+      ctx.restore();
+
     }, 1000);
   }
 
