@@ -16,6 +16,9 @@
 var canvasElement = null;
 var ctx = null;
 
+/* Script interval ID */
+var scriptIntervalID = null;
+
 
 /* Array of YOBAS */
 YOBAS = [];
@@ -114,7 +117,7 @@ function moveYobas()
     // Calculate angle and angle increment
 
     var Δφ = 2 * π + (Math.round(ΔS) / R);
-    var φ = y.angle + Δφ; // TODO: move down this block, depends dS
+    var φ = y.angle + Δφ;
 
 
     // Rotate and draw Yoba
@@ -135,6 +138,26 @@ function moveYobas()
                               // Attention! position MUST be integer
     y.speed = ΔS;
                               // Speed can be float
+  }
+
+
+  // If all Yobas stopped spining, stop script
+  var allYobasStop = true;
+  for(var i in YOBAS) {
+    if(Math.floor(YOBAS[i].speed) != 0) {
+      allYobasStop = false;
+      break;
+    }
+  }
+
+  // If all Yobas stops
+  if(allYobasStop) {
+    // Stop render Yobas
+    clearInterval(scriptIntervalID);
+
+    setTimeout(function() {
+      console.log("Stop script");
+    }, 1000);
   }
 
 }
@@ -184,7 +207,8 @@ function drawYobas()
 
 
   // Rotate and Yobas, render every 60ms
-  setInterval(moveYobas, 60);
+  // Remember script interval ID to destroy script when all Yobas stops
+  scriptIntervalID = setInterval(moveYobas, 60);
 
 }
 
