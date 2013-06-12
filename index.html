@@ -46,7 +46,8 @@ function moveYobas()
     var X0 = y.position - y.radius, // TODO: what if params.position < R?
         Y0 = canvasElement.height - 2 * y.radius,
         R  = y.radius,
-        ΔS = y.speed;
+        ΔS = y.speed,
+        M  = y.mass;
 
 
     // If Yoba has come to the edge
@@ -84,8 +85,8 @@ function moveYobas()
 
       // Calculate speeds after bump
 
-      var m1 = y.radius,
-          m2 = YOBAS[bumpedYobaIndex].radius,
+      var m1 = y.mass,
+          m2 = YOBAS[bumpedYobaIndex].mass,
           v1 = y.speed,
           v2 = YOBAS[bumpedYobaIndex].speed;
 
@@ -105,7 +106,7 @@ function moveYobas()
     // Calculate the force of rolling friction and speed
 
     var f = 0.3,
-        N = 9.8 * R;    // F = mg, Radius as mass, TODO: mass in params
+        N = 9.8 * M;    // F = mg, Radius as mass, TODO: mass in params
 
     var a = (N * (f / R)) / R;    // TODO: radius not needed?
 
@@ -140,6 +141,8 @@ function moveYobas()
                               // Speed can be float
   }
 
+
+  // TODO: Stick this code in a function
 
   // If all Yobas stopped spining, stop script
   var allYobasStop = true;
@@ -177,13 +180,31 @@ function Yoba(params)
   var yobaImage = new Image();
   yobaImage.src = "yoba_image.png";
 
+
+  // Default params, will be used if some params undefined
+  var defaultParams = {
+    radius:     40,
+    speed:      Math.floor(Math.random() * 30 + 10),  // random: 10...40
+    angle:      0
+  };
+
+
+  // Calculate mass via radius
+  var getMass = function(R)
+  {
+    var μ = 0.0001;
+    return Math.floor((4.0 / 3.0) * Math.PI * R * R * R * μ);
+  };
+
+
   // Rotate yoba
   YOBAS.push({
           src:        yobaImage,
           position:   params.position,
-          radius:     params.radius,
-          speed:      params.speed,
-          angle:      0,
+          radius:     params.radius || defaultParams.radius,
+          speed:      params.speed  || defaultParams.speed,
+          angle:                       defaultParams.angle,
+          mass:       getMass(params.radius || defaultParams.radius)
   });
 }
 
