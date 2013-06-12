@@ -146,7 +146,7 @@ function moveYobas()
 
     ctx.translate(R, R);
     ctx.rotate(φ);
-    ctx.drawImage(YOBAS[0].src, -R, -R, 2 * R, 2 * R);
+    ctx.drawImage(y.src, -R, -R, 2 * R, 2 * R);
 
     ctx.restore();
 
@@ -199,10 +199,6 @@ function Yoba(params)
   "use strict";
 
 
-  var yobaImage = new Image();
-  yobaImage.src = "skins/1.png";
-
-
   // Default params, will be used if some params undefined
   var defaultParams = {
     radius:     40,
@@ -211,12 +207,38 @@ function Yoba(params)
   };
 
 
-  // Calculate mass via radius
   var getMass = function(R)
   {
+    /*
+      Calculate mass via radius
+    */
+
     var ρ = 0.0001;
     return Math.floor((4.0 / 3.0) * Math.PI * R * R * R * ρ);
   };
+
+
+  var getSkin = function()
+  {
+    /*
+      Returns random skin from list
+    */
+
+    var path = "skins/",
+        skins = [
+          "1.png",
+          "2.png",
+          "3.png",
+          "4.png"
+        ];
+
+    var randomIndex = Math.floor(Math.random() * skins.length);
+    return path + skins[randomIndex];
+  }
+
+
+  var yobaImage = new Image();
+  yobaImage.src = getSkin(); // "skins/1.png";
 
 
   // Rotate yoba
@@ -237,6 +259,10 @@ function Yoba(params)
 
   Yoba.getSwearword = function()
   {
+    /*
+      Get random swearword from list
+    */
+
     var swearwords = [
       "Sooqa",
       "Krysa",
@@ -253,6 +279,7 @@ function Yoba(params)
     var randomIndex = Math.floor(Math.random() * swearwords.length);
     return swearwords[randomIndex];
   }
+
 }
 
 
