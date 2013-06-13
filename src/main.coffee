@@ -76,24 +76,17 @@ moveYobas = ->
       bumpedYoba.speed = v21
 
       # Yoba says
-      ##!!!INCLUDE
-
-    #   // Yoba says:
-    #   y.textDelay = 10;
-    #   y.text = Yoba.getSwearword();
-    #   YOBAS[bumpedYobaIndex].textDelay = 10;
-    #   y.text = Yoba.getSwearword();
-    # }
+      y.textDelay           = 10
+      y.text                = Yoba.getSwearword()
+      bumpedYoba.textDelay  = 10
+      y.text                = Yoba.getSwearword()
 
 
 
-
-    # // Yoba says: // TODO: -> function
-
-    # if(y.textDelay > 0) {
-    #   --y.textDelay;
-    #   ctx.fillText(y.text, y.position, 10);
-    # }
+    # Yoba silent
+    if y.textDelay > 0
+      --y.textDelay
+      ctx.fillText(y.text, y.position, 10)
 
 
     # Calculate the force of rolling friction and speed
@@ -105,10 +98,10 @@ moveYobas = ->
 
     # What the fuck? Rewrite this shit!
     # dS -= (dS > 0) ? a : -a
-    if dS > 0
-      dS -= a
-    else
-      dS -= -a
+    dS -= if dS > 0
+            a
+          else
+            -a
 
 
     # Calculate angle and angle increment

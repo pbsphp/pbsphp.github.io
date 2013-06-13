@@ -44,15 +44,19 @@ moveYobas = function() {
       v21 = (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2);
       dS = v11;
       bumpedYoba.speed = v21;
+      y.textDelay = 10;
+      y.text = Yoba.getSwearword();
+      bumpedYoba.textDelay = 10;
+      y.text = Yoba.getSwearword();
+    }
+    if (y.textDelay > 0) {
+      --y.textDelay;
+      ctx.fillText(y.text, y.position, 10);
     }
     f = 0.3;
     N = 9.8 * M;
     a = (N * (f / R)) / R;
-    if (dS > 0) {
-      dS -= a;
-    } else {
-      dS -= -a;
-    }
+    dS -= dS > 0 ? a : -a;
     dFi = 2 * pi + (Math.round(dS) / R);
     fi = y.angle + dFi;
     ctx.save();
