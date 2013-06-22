@@ -5,7 +5,7 @@ drawYobas = function() {
   if (Yoba.scriptIntervalID) {
     clearInterval(Yoba.scriptIntervalID);
   }
-  window.YOBAS = [];
+  Yoba.removeYobas();
   if (!Yoba.canvasElement) {
     Yoba.canvasElement = document.getElementById("yoba_track");
     Yoba.ctx = Yoba.canvasElement.getContext("2d");
@@ -24,5 +24,5 @@ drawYobas = function() {
     radius: 60,
     position: 100
   });
-  return Yoba.scriptIntervalID = setInterval(moveYobas, 60);
+  return Yoba.scriptIntervalID = setInterval(mainHandler, 60);
 };

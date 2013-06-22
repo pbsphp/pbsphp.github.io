@@ -2,30 +2,30 @@
 var Yoba;
 
 Yoba = (function() {
-  var defaultParams, getMass, getSkin;
+  var getMass, getSkin, registerYoba;
 
   function Yoba(params) {
-    var yobaImage;
+    var defaultAngle, defaultRadius, defaultSpeed, yobaImage;
     yobaImage = new Image();
     yobaImage.src = getSkin();
-    YOBAS.push({
-      src: yobaImage,
-      position: params.position,
-      radius: params.radius || defaultParams.radius,
-      speed: params.speed || defaultParams.speed(),
-      angle: defaultParams.angle,
-      mass: getMass(params.radius || defaultParams.radius),
-      textDelay: 0,
-      text: ''
-    });
+    defaultRadius = 40;
+    defaultSpeed = function() {
+      return Math.floor(Math.random() * 25 + 5);
+    };
+    defaultAngle = 0;
+    this.src = yobaImage;
+    this.position = params.position;
+    this.radius = params.radius || defaultRadius;
+    this.speed = params.speed || defaultSpeed();
+    this.angle = defaultAngle;
+    this.mass = getMass(params.radius || defaultRadius);
+    this.textDelay = 0;
+    this.text = '';
+    registerYoba(this);
   }
 
-  defaultParams = {
-    radius: 40,
-    speed: function() {
-      return Math.floor(Math.random() * 25 + 5);
-    },
-    angle: 0
+  registerYoba = function(self) {
+    return Yoba.allYobas.push(self);
   };
 
   getMass = function(R) {
@@ -42,11 +42,30 @@ Yoba = (function() {
     return path + skins[randomIndex];
   };
 
+  Yoba.prototype.redraw = function() {
+    var R, ctx, fi;
+    ctx = Yoba.ctx;
+    R = this.radius;
+    fi = this.angle;
+    ctx.save();
+    ctx.translate(this.position - R, Yoba.canvasElement.height - 2 * R);
+    ctx.translate(R, R);
+    ctx.rotate(fi);
+    ctx.drawImage(this.src, -R, -R, 2 * R, 2 * R);
+    return ctx.restore();
+  };
+
   Yoba.canvasElement = null;
 
   Yoba.ctx = null;
 
   Yoba.scriptIntervalID = null;
+
+  Yoba.allYobas = [];
+
+  Yoba.removeYobas = function() {
+    return this.allYobas = [];
+  };
 
   Yoba.getSwearword = function() {
     var randomIndex, swearwords;

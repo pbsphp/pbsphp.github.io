@@ -9,12 +9,12 @@ drawYobas = ->
     clearInterval(Yoba.scriptIntervalID)
 
   # Remove old Yobas
-  window.YOBAS = []
+  Yoba.removeYobas()
 
   # Initialize canvas
   unless Yoba.canvasElement
-    Yoba.canvasElement = document.getElementById("yoba_track")
-    Yoba.ctx = Yoba.canvasElement.getContext("2d")
+    Yoba.canvasElement  = document.getElementById("yoba_track")
+    Yoba.ctx            = Yoba.canvasElement.getContext("2d")
 
   else
     # Clear screen (canvas element)
@@ -29,4 +29,4 @@ drawYobas = ->
 
 
   # Start render Yobas
-  Yoba.scriptIntervalID = setInterval(moveYobas, 60)
+  Yoba.scriptIntervalID = setInterval(mainHandler, 60)

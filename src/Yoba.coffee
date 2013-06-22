@@ -4,29 +4,34 @@ class Yoba
   constructor: (params) ->
 
     # Get skin for Yoba
-    yobaImage     = new Image()
-    yobaImage.src = getSkin()
+    yobaImage         = new Image()
+    yobaImage.src     = getSkin()
 
 
-    # Add yoba to YOBAS handler
-    YOBAS.push({
-            src:          yobaImage
-            position:     params.position
-            radius:       params.radius         || defaultParams.radius
-            speed:        params.speed          || defaultParams.speed()
-            angle:                                 defaultParams.angle
-            mass:         getMass(params.radius || defaultParams.radius)
-            textDelay:    0
-            text:         ''
-    })
+    # Default parameters and constants
+    defaultRadius     = 40
+    defaultSpeed      = -> Math.floor(Math.random() * 25 + 5)
+    defaultAngle      = 0
+
+    # Public params
+    this.src          = yobaImage
+    this.position     = params.position
+    this.radius       = params.radius         || defaultRadius
+    this.speed        = params.speed          || defaultSpeed()
+    this.angle        =                          defaultAngle
+    this.mass         = getMass(params.radius || defaultRadius)
+    this.textDelay    = 0
+    this.text         = ''
 
 
-  # Default parameters and constants
-  defaultParams = {
-    radius:       40
-    speed: ->     Math.floor(Math.random() * 25 + 5)
-    angle:        0
-  }
+    # Register new
+    registerYoba(this)
+
+
+
+  # Register new Yoba
+  registerYoba = (self) ->
+    Yoba.allYobas.push(self)
 
 
   # Get mass by radius
@@ -49,11 +54,39 @@ class Yoba
     path + skins[randomIndex]
 
 
+  # Rotate, move and redraw Yoba
+  redraw: ->
+    ctx = Yoba.ctx
+    R = this.radius
+    fi = this.angle
+
+    ctx.save()
+    ctx.translate(this.position - R, Yoba.canvasElement.height - 2 * R)
+
+    ctx.translate(R, R)
+    ctx.rotate(fi)
+    ctx.drawImage(this.src, -R, -R, 2 * R, 2 * R)
+
+    ctx.restore()
+
+
+
   # Class members and methods
 
   @canvasElement      = null
   @ctx                = null
   @scriptIntervalID   = null
+
+
+
+  # All Yobas
+  @allYobas = []
+
+
+  # Remove all Yobas
+  @removeYobas = ->
+    @allYobas = []
+
 
 
   # Get random swearword from list

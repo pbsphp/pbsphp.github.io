@@ -1,31 +1,28 @@
 
-# Yobas list
-YOBAS             = []        # TODO: push Yobas, not hashed
-
 
 # Main handler
 # Called every 60ms
-moveYobas = ->
-  # TODO: rename
+mainHandler = ->
 
   # Aliases
   pi                = Math.PI
-  canvasElement     = Yoba.canvasElement
   ctx               = Yoba.ctx
   scriptIntervalID  = Yoba.scriptIntervalID
+  WIDTH             = Yoba.canvasElement.width
+  HEIGHT            = Yoba.canvasElement.height
 
 
   # Clear screen before rendering
-  ctx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+  ctx.clearRect(0, 0, WIDTH, HEIGHT)
 
 
   # For each Yoba calculate speed
 
-  for y, yobaIndex in YOBAS
+  for y, yobaIndex in Yoba.allYobas
 
     # Aliases
     X0 = y.position - y.radius
-    Y0 = canvasElement.height - 2 * y.radius
+    Y0 = HEIGHT - 2 * y.radius
     R  = y.radius
     dS = y.speed
     M  = y.mass
@@ -33,7 +30,7 @@ moveYobas = ->
 
     # Detect border
 
-    if y.position + R + dS >= canvasElement.width && dS > 0
+    if y.position + R + dS >= WIDTH && dS > 0
       # Right border, move left
       dS = - Math.abs(dS)
     else if y.position - R + dS <= 0 && dS < 0
@@ -45,7 +42,7 @@ moveYobas = ->
     bumpedYoba = null   # The index of nearby Yoba, which will be bumped
 
     # Check positions of each Yoba
-    for yb, i in YOBAS
+    for yb, i in Yoba.allYobas
       if yobaIndex != i
         oR = yb.position + yb.radius + yb.speed
         oL = yb.position - yb.radius + yb.speed
@@ -96,30 +93,14 @@ moveYobas = ->
 
     a = (N * (f / R)) / R
 
-    # What the fuck? Rewrite this shit!
-    # dS -= (dS > 0) ? a : -a
-    dS -= if dS > 0
-            a
-          else
-            -a
+    # TODO: What the fuck? Rewrite this shit!
+    dS -= if dS > 0 then a else -a
 
 
     # Calculate angle and angle increment
 
     dFi = 2 * pi + (Math.round(dS) / R)
     fi = y.angle + dFi
-
-
-    # Rotate and draw Yoba
-
-    ctx.save()
-    ctx.translate(X0 + Math.round(dS), Y0)
-
-    ctx.translate(R, R)
-    ctx.rotate(fi)
-    ctx.drawImage(y.src, -R, -R, 2 * R, 2 * R)
-
-    ctx.restore()
 
 
     # Remember calculated vars
@@ -129,11 +110,15 @@ moveYobas = ->
     y.speed       = dS                # speed:float
 
 
+    # Rotate, move and redraw Yoba
+    y.redraw()
+
+
 
   # If all Yobas stopped, stop script
   allYobasStopped = true
-  for yb in YOBAS
-    if Math.floor(Math.abs(yb.speed)) != 0
+  for yb in Yoba.allYobas
+    if ~~(Math.abs(yb.speed)) != 0
       allYobasStopped = false
       break
 
@@ -151,14 +136,14 @@ moveYobas = ->
       ctx.shadowColor = 'orange'
       ctx.shadowOffsetX = 3
       ctx.shadowOffsetY = 3
-      ctx.fillText('SASAI LOLKA', Math.floor(canvasElement.width * 0.30), 100)
+      ctx.fillText('SASAI LOLKA', ~~(WIDTH * 0.30), 100)
 
       # Show 'click to replay'
       ctx.font = 'italic 10pt Calibri'
       ctx.shadowColor = 'red'
       ctx.shadowOffsetX = 1
       ctx.shadowOffsetY = 1
-      ctx.fillText('Click to replay', Math.floor(canvasElement.width * 0.50), 130)
+      ctx.fillText('Click to replay', ~~(WIDTH * 0.50), 130)
 
       ctx.restore()
 
