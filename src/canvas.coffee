@@ -13,7 +13,6 @@ canvas = {
     canvas.ctx?
 
 
-
   # Initialize canvas
   initialize: (element) ->
     canvas.canvasElement  = element
@@ -25,7 +24,6 @@ canvas = {
   # Clear canvas
   clear: ->
     canvas.ctx.clearRect(0, 0, canvas.width, canvas.height)
-
 
 
   # Show 'sasai lolka' and replay button
@@ -51,7 +49,6 @@ canvas = {
     ctx.restore()
 
 
-
   # Draw Yoba
   drawYoba: (params) ->
     R         = params.radius
@@ -68,6 +65,11 @@ canvas = {
     ctx.drawImage(src, -R, -R, 2 * R, 2 * R)
 
     ctx.restore()
+
+
+  # Show text at (X;Y)
+  showTextAt: (text, X, Y) ->
+    canvas.ctx.fillText(text, X, Y)
 
 
 }

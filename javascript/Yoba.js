@@ -5,20 +5,19 @@ Yoba = (function() {
   var getMass, getSkin, registerYoba;
 
   function Yoba(params) {
-    var defaultAngle, defaultRadius, defaultSpeed, yobaImage;
+    var defaultRadius, defaultSpeed, yobaImage;
     yobaImage = new Image();
     yobaImage.src = getSkin();
     defaultRadius = 40;
     defaultSpeed = function() {
-      return Math.floor(Math.random() * 25 + 5);
+      return ~~(Math.random() * 25 + 5);
     };
-    defaultAngle = 0;
     this.src = yobaImage;
     this.position = params.position;
     this.radius = params.radius || defaultRadius;
     this.speed = params.speed || defaultSpeed();
-    this.angle = defaultAngle;
     this.mass = getMass(params.radius || defaultRadius);
+    this.angle = 0;
     this.textDelay = 0;
     this.text = '';
     registerYoba(this);
@@ -31,15 +30,14 @@ Yoba = (function() {
   getMass = function(R) {
     var p;
     p = 0.0001;
-    return Math.floor((4 / 3) * Math.PI * R * R * R * p);
+    return ~~((4 / 3) * Math.PI * R * R * R * p);
   };
 
   getSkin = function() {
-    var path, randomIndex, skins;
+    var path, skins;
     path = "skins/";
     skins = ["1.png", "2.png", "3.png", "4.png"];
-    randomIndex = Math.floor(Math.random() * skins.length);
-    return path + skins[randomIndex];
+    return path + skins[~~(Math.random() * skins.length)];
   };
 
   Yoba.prototype.redraw = function() {
@@ -59,11 +57,9 @@ Yoba = (function() {
   Yoba.prototype.continueSpeek = function() {
     if (this.textDelay > 0) {
       --this.textDelay;
-      return canvas.ctx.fillText(this.text, this.position, 10);
+      return canvas.showTextAt(this.text, this.position, 10);
     }
   };
-
-  Yoba.scriptIntervalID = null;
 
   Yoba.allYobas = [];
 
@@ -72,14 +68,13 @@ Yoba = (function() {
   };
 
   Yoba.getSwearword = function() {
-    var randomIndex, swearwords;
+    var swearwords;
     swearwords = ["Sooqa", "Krysa", "LOL", "Tvoi mama ebal", "U tebya bugurt", "U vas popka prigorela", "Butthurt", "Lalka", "Sasai", "Pidor"];
-    randomIndex = Math.floor(Math.random() * swearwords.length);
-    return swearwords[randomIndex];
+    return swearwords[~~(Math.random() * swearwords.length)];
   };
 
   Yoba.stopScript = function() {
-    clearInterval(Yoba.scriptIntervalID);
+    handler.stop();
     return setTimeout(canvas.showSasai, 1000);
   };
 

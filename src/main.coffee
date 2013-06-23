@@ -1,4 +1,32 @@
 
+
+handler = {
+
+  # Main handler script interval ID
+  scriptIntervalID: null
+
+  # Update every %delay% ms
+  delay: 60
+
+
+  initialize: (id) ->
+    handler.scriptIntervalID = id
+
+
+  # Stop script
+  stop: ->
+    if handler.scriptIntervalID
+      clearInterval(handler.scriptIntervalID)
+
+
+  # Start script handler
+  start: ->
+    handler.scriptIntervalID = setInterval(mainHandler, handler.delay)
+
+}
+
+
+
 # Main handler
 # Called every 60ms
 mainHandler = ->
@@ -11,7 +39,6 @@ mainHandler = ->
 
   # Clear screen before rendering
   canvas.clear()
-
 
 
   # For each Yoba calculate speed
@@ -93,15 +120,16 @@ mainHandler = ->
 
     # Calculate angle and angle increment
 
-    dFi = 2 * Math.PI + (Math.round(dS) / R)
+    dFi = Math.round(dS) / R
     fi = y.angle + dFi
 
 
     # Remember calculated vars
 
-    y.angle       = fi % (4 * Math.PI)
-    y.position   += Math.round(dS)    # position:integer
-    y.speed       = dS                # speed:float
+    y.angle       = 2 * Math.PI + fi % (4 * Math.PI)
+                                        # 0 <= y.angle <= 2 pi
+    y.position   += Math.round(dS)      # position: Integer
+    y.speed       = dS                  # speed: Float
 
 
     # Rotate, move and redraw Yoba
@@ -109,7 +137,7 @@ mainHandler = ->
 
 
 
-  # If all Yobas stopped, stop script
+  # If all Yobas stopped, change flag
   allYobasStopped = true
   for yb in Yoba.allYobas
     if ~~(Math.abs(yb.speed)) != 0

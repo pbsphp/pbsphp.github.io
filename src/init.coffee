@@ -5,8 +5,7 @@ drawYobas = ->
   # Clear variables after last using
 
   # Stop render Yobas if needed
-  if Yoba.scriptIntervalID
-    clearInterval(Yoba.scriptIntervalID)
+  handler.stop()
 
   # Remove old Yobas
   Yoba.removeYobas()
@@ -27,4 +26,4 @@ drawYobas = ->
 
 
   # Start render Yobas
-  Yoba.scriptIntervalID = setInterval(mainHandler, 60)
+  handler.start()

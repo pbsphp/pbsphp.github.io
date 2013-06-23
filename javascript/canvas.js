@@ -47,5 +47,8 @@ canvas = {
     ctx.rotate(fi);
     ctx.drawImage(src, -R, -R, 2 * R, 2 * R);
     return ctx.restore();
+  },
+  showTextAt: function(text, X, Y) {
+    return canvas.ctx.fillText(text, X, Y);
   }
 };

@@ -10,21 +10,19 @@ class Yoba
 
     # Default parameters and constants
     defaultRadius     = 40
-    defaultSpeed      = -> Math.floor(Math.random() * 25 + 5)
-    defaultAngle      = 0
+    defaultSpeed      = -> ~~(Math.random() * 25 + 5)
 
     # Public params
     this.src          = yobaImage
     this.position     = params.position
     this.radius       = params.radius         || defaultRadius
     this.speed        = params.speed          || defaultSpeed()
-    this.angle        =                          defaultAngle
     this.mass         = getMass(params.radius || defaultRadius)
+    this.angle        = 0
     this.textDelay    = 0
     this.text         = ''
 
-
-    # Register new
+    # Register new Yoba
     registerYoba(this)
 
 
@@ -37,7 +35,7 @@ class Yoba
   # Get mass by radius
   getMass = (R) ->
     p = 0.0001
-    Math.floor ((4 / 3) * Math.PI * R * R * R * p)
+    ~~((4 / 3) * Math.PI * R * R * R * p)
 
 
   # Return random skin from list
@@ -50,8 +48,8 @@ class Yoba
       "4.png"
     ]
 
-    randomIndex = Math.floor(Math.random() * skins.length)
-    path + skins[randomIndex]
+    path + skins[~~(Math.random() * skins.length)]
+
 
 
   # Rotate, move and redraw Yoba
@@ -74,15 +72,11 @@ class Yoba
   continueSpeek: ->
     if this.textDelay > 0
       --this.textDelay
-      canvas.ctx.fillText(this.text, this.position, 10)
+      canvas.showTextAt(this.text, this.position, 10)
 
 
 
   # Class members and methods
-
-  @scriptIntervalID   = null
-
-
 
   # All Yobas
   @allYobas = []
@@ -110,11 +104,10 @@ class Yoba
       "Pidor"
     ]
 
-    randomIndex = Math.floor(Math.random() * swearwords.length)
-    swearwords[randomIndex]
+    swearwords[~~(Math.random() * swearwords.length)]
 
 
   # Stop script and render "sasai lolka"
   @stopScript = ->
-    clearInterval(Yoba.scriptIntervalID)
+    handler.stop()
     setTimeout(canvas.showSasai, 1000)
