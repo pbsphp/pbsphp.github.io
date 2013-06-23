@@ -12,14 +12,12 @@ drawYobas = ->
   Yoba.removeYobas()
 
   # Initialize canvas
-  unless Yoba.canvasElement
-    Yoba.canvasElement  = document.getElementById("yoba_track")
-    Yoba.ctx            = Yoba.canvasElement.getContext("2d")
+  unless canvas.isInitialized()
+    canvas.initialize(document.getElementById("yoba_track"))
 
   else
     # Clear screen (canvas element)
-    Yoba.ctx.clearRect(0, 0, Yoba.canvasElement.width, Yoba.canvasElement.height)
-
+    canvas.clear()
 
   # Create Yobas
 

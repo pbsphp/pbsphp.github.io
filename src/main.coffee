@@ -1,19 +1,17 @@
 
-
 # Main handler
 # Called every 60ms
 mainHandler = ->
 
   # Aliases
-  pi                = Math.PI
-  ctx               = Yoba.ctx
   scriptIntervalID  = Yoba.scriptIntervalID
-  WIDTH             = Yoba.canvasElement.width
-  HEIGHT            = Yoba.canvasElement.height
+  WIDTH             = canvas.width
+  HEIGHT            = canvas.height
 
 
   # Clear screen before rendering
-  ctx.clearRect(0, 0, WIDTH, HEIGHT)
+  canvas.clear()
+
 
 
   # For each Yoba calculate speed
@@ -39,7 +37,7 @@ mainHandler = ->
 
 
     # Detect other Yobas on the way
-    bumpedYoba = null   # The index of nearby Yoba, which will be bumped
+    bumpedYoba = null   # The nearby Yoba, which will be bumped
 
     # Check positions of each Yoba
     for yb, i in Yoba.allYobas
@@ -73,17 +71,13 @@ mainHandler = ->
       bumpedYoba.speed = v21
 
       # Yoba says
-      y.textDelay           = 10
-      y.text                = Yoba.getSwearword()
-      bumpedYoba.textDelay  = 10
-      y.text                = Yoba.getSwearword()
+      y.startSpeek()
+      bumpedYoba.startSpeek()
 
 
 
-    # Yoba silent
-    if y.textDelay > 0
-      --y.textDelay
-      ctx.fillText(y.text, y.position, 10)
+    # Continue speek if can
+    y.continueSpeek()
 
 
     # Calculate the force of rolling friction and speed
@@ -99,13 +93,13 @@ mainHandler = ->
 
     # Calculate angle and angle increment
 
-    dFi = 2 * pi + (Math.round(dS) / R)
+    dFi = 2 * Math.PI + (Math.round(dS) / R)
     fi = y.angle + dFi
 
 
     # Remember calculated vars
 
-    y.angle       = fi % (4 * pi)
+    y.angle       = fi % (4 * Math.PI)
     y.position   += Math.round(dS)    # position:integer
     y.speed       = dS                # speed:float
 
@@ -126,25 +120,4 @@ mainHandler = ->
   # If all Yobas stopped
   if allYobasStopped
     # Stop rendering Yobas
-    clearInterval(scriptIntervalID)
-
-    setTimeout(->
-      ctx.save()
-
-      # Show 'SASAI LOLKA'
-      ctx.font = 'italic 40pt Calibri'
-      ctx.shadowColor = 'orange'
-      ctx.shadowOffsetX = 3
-      ctx.shadowOffsetY = 3
-      ctx.fillText('SASAI LOLKA', ~~(WIDTH * 0.30), 100)
-
-      # Show 'click to replay'
-      ctx.font = 'italic 10pt Calibri'
-      ctx.shadowColor = 'red'
-      ctx.shadowOffsetX = 1
-      ctx.shadowOffsetY = 1
-      ctx.fillText('Click to replay', ~~(WIDTH * 0.50), 130)
-
-      ctx.restore()
-
-    , 1000)
+    Yoba.stopScript()

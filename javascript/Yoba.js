@@ -43,21 +43,25 @@ Yoba = (function() {
   };
 
   Yoba.prototype.redraw = function() {
-    var R, ctx, fi;
-    ctx = Yoba.ctx;
-    R = this.radius;
-    fi = this.angle;
-    ctx.save();
-    ctx.translate(this.position - R, Yoba.canvasElement.height - 2 * R);
-    ctx.translate(R, R);
-    ctx.rotate(fi);
-    ctx.drawImage(this.src, -R, -R, 2 * R, 2 * R);
-    return ctx.restore();
+    return canvas.drawYoba({
+      radius: this.radius,
+      angle: this.angle,
+      src: this.src,
+      position: this.position
+    });
   };
 
-  Yoba.canvasElement = null;
+  Yoba.prototype.startSpeek = function() {
+    this.textDelay = 10;
+    return this.text = Yoba.getSwearword();
+  };
 
-  Yoba.ctx = null;
+  Yoba.prototype.continueSpeek = function() {
+    if (this.textDelay > 0) {
+      --this.textDelay;
+      return canvas.ctx.fillText(this.text, this.position, 10);
+    }
+  };
 
   Yoba.scriptIntervalID = null;
 
@@ -72,6 +76,11 @@ Yoba = (function() {
     swearwords = ["Sooqa", "Krysa", "LOL", "Tvoi mama ebal", "U tebya bugurt", "U vas popka prigorela", "Butthurt", "Lalka", "Sasai", "Pidor"];
     randomIndex = Math.floor(Math.random() * swearwords.length);
     return swearwords[randomIndex];
+  };
+
+  Yoba.stopScript = function() {
+    clearInterval(Yoba.scriptIntervalID);
+    return setTimeout(canvas.showSasai, 1000);
   };
 
   return Yoba;

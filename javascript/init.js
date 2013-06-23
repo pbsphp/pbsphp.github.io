@@ -6,11 +6,10 @@ drawYobas = function() {
     clearInterval(Yoba.scriptIntervalID);
   }
   Yoba.removeYobas();
-  if (!Yoba.canvasElement) {
-    Yoba.canvasElement = document.getElementById("yoba_track");
-    Yoba.ctx = Yoba.canvasElement.getContext("2d");
+  if (!canvas.isInitialized()) {
+    canvas.initialize(document.getElementById("yoba_track"));
   } else {
-    Yoba.ctx.clearRect(0, 0, Yoba.canvasElement.width, Yoba.canvasElement.height);
+    canvas.clear();
   }
   new Yoba({
     radius: 50,

@@ -2,13 +2,11 @@
 var mainHandler;
 
 mainHandler = function() {
-  var HEIGHT, M, N, R, WIDTH, X0, Y0, a, allYobasStopped, bumpedYoba, ctx, dFi, dS, f, fi, i, m1, m2, oL, oR, pi, scriptIntervalID, v1, v11, v2, v21, y, yL, yR, yb, yobaIndex, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
-  pi = Math.PI;
-  ctx = Yoba.ctx;
+  var HEIGHT, M, N, R, WIDTH, X0, Y0, a, allYobasStopped, bumpedYoba, dFi, dS, f, fi, i, m1, m2, oL, oR, scriptIntervalID, v1, v11, v2, v21, y, yL, yR, yb, yobaIndex, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
   scriptIntervalID = Yoba.scriptIntervalID;
-  WIDTH = Yoba.canvasElement.width;
-  HEIGHT = Yoba.canvasElement.height;
-  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+  WIDTH = canvas.width;
+  HEIGHT = canvas.height;
+  canvas.clear();
   _ref = Yoba.allYobas;
   for (yobaIndex = _i = 0, _len = _ref.length; _i < _len; yobaIndex = ++_i) {
     y = _ref[yobaIndex];
@@ -45,22 +43,17 @@ mainHandler = function() {
       v21 = (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2);
       dS = v11;
       bumpedYoba.speed = v21;
-      y.textDelay = 10;
-      y.text = Yoba.getSwearword();
-      bumpedYoba.textDelay = 10;
-      y.text = Yoba.getSwearword();
+      y.startSpeek();
+      bumpedYoba.startSpeek();
     }
-    if (y.textDelay > 0) {
-      --y.textDelay;
-      ctx.fillText(y.text, y.position, 10);
-    }
+    y.continueSpeek();
     f = 0.3;
     N = 9.8 * M;
     a = (N * (f / R)) / R;
     dS -= dS > 0 ? a : -a;
-    dFi = 2 * pi + (Math.round(dS) / R);
+    dFi = 2 * Math.PI + (Math.round(dS) / R);
     fi = y.angle + dFi;
-    y.angle = fi % (4 * pi);
+    y.angle = fi % (4 * Math.PI);
     y.position += Math.round(dS);
     y.speed = dS;
     y.redraw();
@@ -75,20 +68,6 @@ mainHandler = function() {
     }
   }
   if (allYobasStopped) {
-    clearInterval(scriptIntervalID);
-    return setTimeout(function() {
-      ctx.save();
-      ctx.font = 'italic 40pt Calibri';
-      ctx.shadowColor = 'orange';
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 3;
-      ctx.fillText('SASAI LOLKA', ~~(WIDTH * 0.30), 100);
-      ctx.font = 'italic 10pt Calibri';
-      ctx.shadowColor = 'red';
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 1;
-      ctx.fillText('Click to replay', ~~(WIDTH * 0.50), 130);
-      return ctx.restore();
-    }, 1000);
+    return Yoba.stopScript();
   }
 };

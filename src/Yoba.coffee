@@ -56,25 +56,30 @@ class Yoba
 
   # Rotate, move and redraw Yoba
   redraw: ->
-    ctx = Yoba.ctx
-    R = this.radius
-    fi = this.angle
+    canvas.drawYoba({
+      radius:   this.radius
+      angle:    this.angle
+      src:      this.src
+      position: this.position
+    })
 
-    ctx.save()
-    ctx.translate(this.position - R, Yoba.canvasElement.height - 2 * R)
 
-    ctx.translate(R, R)
-    ctx.rotate(fi)
-    ctx.drawImage(this.src, -R, -R, 2 * R, 2 * R)
+  # Speek
+  startSpeek: ->
+    this.textDelay    = 10
+    this.text         = Yoba.getSwearword()
 
-    ctx.restore()
+
+  # Continue speek (if needed)
+  continueSpeek: ->
+    if this.textDelay > 0
+      --this.textDelay
+      canvas.ctx.fillText(this.text, this.position, 10)
 
 
 
   # Class members and methods
 
-  @canvasElement      = null
-  @ctx                = null
   @scriptIntervalID   = null
 
 
@@ -107,3 +112,9 @@ class Yoba
 
     randomIndex = Math.floor(Math.random() * swearwords.length)
     swearwords[randomIndex]
+
+
+  # Stop script and render "sasai lolka"
+  @stopScript = ->
+    clearInterval(Yoba.scriptIntervalID)
+    setTimeout(canvas.showSasai, 1000)
