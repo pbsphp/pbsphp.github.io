@@ -4,23 +4,23 @@ class Yoba
   constructor: (params) ->
 
     # Get skin for Yoba
-    yobaImage         = new Image()
-    yobaImage.src     = getSkin()
+    yobaImage       = new Image()
+    yobaImage.src   = getSkin()
 
 
     # Default parameters and constants
-    defaultRadius     = 40
-    defaultSpeed      = -> ~~(Math.random() * 25 + 5)
+    defaultRadius   = 40
+    defaultSpeed    = -> ~~(Math.random() * 25 + 5)
 
     # Public params
-    this.src          = yobaImage
-    this.position     = params.position
-    this.radius       = params.radius         || defaultRadius
-    this.speed        = params.speed          || defaultSpeed()
-    this.mass         = getMass(params.radius || defaultRadius)
-    this.angle        = 0
-    this.textDelay    = 0
-    this.text         = ''
+    @src            = yobaImage
+    @position       = params.position
+    @radius         = params.radius         || defaultRadius
+    @speed          = params.speed          || defaultSpeed()
+    @mass           = getMass(params.radius || defaultRadius)
+    @angle          = 0
+    @textDelay      = 0
+    @text           = ''
 
     # Register new Yoba
     registerYoba(this)
@@ -29,13 +29,18 @@ class Yoba
 
   # Register new Yoba
   registerYoba = (self) ->
-    Yoba.allYobas.push(self)
+    allYobas.push(self)
 
 
   # Get mass by radius
   getMass = (R) ->
     p = 0.0001
     ~~((4 / 3) * Math.PI * R * R * R * p)
+
+
+  # Return random element from array
+  getRandomFrom = (array) ->
+    array[~~(Math.random() * array.length)]
 
 
   # Return random skin from list
@@ -48,7 +53,7 @@ class Yoba
       "4.png"
     ]
 
-    path + skins[~~(Math.random() * skins.length)]
+    path + getRandomFrom(skins)
 
 
 
@@ -79,12 +84,17 @@ class Yoba
   # Class members and methods
 
   # All Yobas
-  @allYobas = []
+  allYobas = []
+
+
+  # Get all Yobas
+  @getAllYobas = ->
+    allYobas
 
 
   # Remove all Yobas
   @removeYobas = ->
-    @allYobas = []
+    allYobas = []
 
 
 
@@ -104,7 +114,7 @@ class Yoba
       "Pidor"
     ]
 
-    swearwords[~~(Math.random() * swearwords.length)]
+    getRandomFrom(swearwords)
 
 
   # Stop script and render "sasai lolka"

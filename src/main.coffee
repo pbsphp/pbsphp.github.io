@@ -21,131 +21,149 @@ handler = {
 
   # Start script handler
   start: ->
-    handler.scriptIntervalID = setInterval(mainHandler, handler.delay)
-
-}
+    handler.scriptIntervalID = setInterval(handler.main, handler.delay)
 
 
 
-# Main handler
-# Called every 60ms
-mainHandler = ->
-
-  # Aliases
-  scriptIntervalID  = Yoba.scriptIntervalID
-  WIDTH             = canvas.width
-  HEIGHT            = canvas.height
-
-
-  # Clear screen before rendering
-  canvas.clear()
-
-
-  # For each Yoba calculate speed
-
-  for y, yobaIndex in Yoba.allYobas
+  # Main handler
+  # Called every 60ms
+  main: ->
 
     # Aliases
-    X0 = y.position - y.radius
-    Y0 = HEIGHT - 2 * y.radius
-    R  = y.radius
-    dS = y.speed
-    M  = y.mass
+    scriptIntervalID  = Yoba.scriptIntervalID
+    WIDTH             = canvas.width
+    HEIGHT            = canvas.height
 
 
-    # Detect border
-
-    if y.position + R + dS >= WIDTH && dS > 0
-      # Right border, move left
-      dS = - Math.abs(dS)
-    else if y.position - R + dS <= 0 && dS < 0
-      # Left border, move right
-      dS = + Math.abs(dS)
+    # Clear screen before rendering
+    canvas.clear()
 
 
-    # Detect other Yobas on the way
-    bumpedYoba = null   # The nearby Yoba, which will be bumped
+    # For each Yoba calculate speed
 
-    # Check positions of each Yoba
-    for yb, i in Yoba.allYobas
-      if yobaIndex != i
-        oR = yb.position + yb.radius + yb.speed
-        oL = yb.position - yb.radius + yb.speed
-        yR = y.position + R + dS
-        yL = y.position - R + dS
+    for y, yobaIndex in Yoba.getAllYobas()
 
-        # If there will be collision
-        if oL <= yR <= oR || oL <= yL <= oR
-          bumpedYoba = yb
+      # Aliases
+      X0 = y.position - y.radius
+      Y0 = HEIGHT - 2 * y.radius
+      R  = y.radius
+      dS = y.speed
 
 
-    # If there is nearby Yoba
-    if bumpedYoba
-      # Calculate speeds after bump
+      # Detect border
 
-      m1 = y.mass
-      m2 = bumpedYoba.mass
-      v1 = y.speed
-      v2 = bumpedYoba.speed
-
-
-      # p01 + p02 = p1 + p2
-
-      v11 = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2)
-      v21 = (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2)
-
-      dS = v11
-      bumpedYoba.speed = v21
-
-      # Yoba says
-      y.startSpeek()
-      bumpedYoba.startSpeek()
+      if y.position + R + dS >= WIDTH && dS > 0
+        # Right border, move left
+        dS = - Math.abs(dS)
+      else if y.position - R + dS <= 0 && dS < 0
+        # Left border, move right
+        dS = + Math.abs(dS)
 
 
+      # Detect other Yobas on the way
+      bumpedYoba = null   # The nearby Yoba, which will be bumped
 
-    # Continue speek if can
-    y.continueSpeek()
+      # Check positions of each Yoba
+      for yb, i in Yoba.getAllYobas()
+        if yobaIndex != i
+          oR = yb.position + yb.radius + yb.speed
+          oL = yb.position - yb.radius + yb.speed
+          yR = y.position + R + dS
+          yL = y.position - R + dS
+
+          # If there will be collision
+          if oL <= yR <= oR || oL <= yL <= oR
+            bumpedYoba = yb
 
 
-    # Calculate the force of rolling friction and speed
+      # If there is nearby Yoba
+      if bumpedYoba
+        # Calculate speeds after bump
 
+        m1 = y.mass
+        m2 = bumpedYoba.mass
+        v1 = y.speed
+        v2 = bumpedYoba.speed
+
+        # Get speeds after bump
+        speeds = handler.getSpeedsAfterBump(m1, v1, m2, v2)
+
+        dS = speeds[0]
+        bumpedYoba.speed = speeds[1]
+
+        # Yoba says
+        y.startSpeek()
+        bumpedYoba.startSpeek()
+
+
+
+      # Continue speek if can
+      y.continueSpeek()
+
+
+      # Determine the acceleration due to the frictional force
+      dS -= handler.getFrictionalAcceleration(y.radius, y.mass, dS)
+
+      # Calculate angle and angle increment
+
+      dFi = Math.round(dS) / R
+      fi = y.angle + dFi
+
+
+      # Remember calculated vars
+
+      y.angle       = handler.getNewAngle(y.angle, R, dS)
+                                          # 0 <= y.angle <= 2 pi
+      y.position   += Math.round(dS)      # position: Integer
+      y.speed       = dS                  # speed: Float
+
+
+      # Rotate, move and redraw Yoba
+      y.redraw()
+
+
+
+    # If all Yobas stopped, change flag
+    allYobasStopped = true
+    for yb in Yoba.getAllYobas()
+      if ~~(Math.abs(yb.speed)) != 0
+        allYobasStopped = false
+        break
+
+
+    # If all Yobas stopped
+    if allYobasStopped
+      # Stop rendering Yobas
+      Yoba.stopScript()
+
+
+
+  # Private
+
+  # Get speeds after bump
+  getSpeedsAfterBump: (m1, v1, m2, v2) ->
+    # The law of conservation of momentum: p01 + p02 = p1 + p2
+    [
+      ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2)
+      (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2)
+    ]
+
+
+  # Determine the acceleration due to the frictional force
+  getFrictionalAcceleration: (R, M, speed) ->
+    # It works lol
     f = 0.3
     N = 9.8 * M    # N = mg
 
     a = (N * (f / R)) / R
 
-    # TODO: What the fuck? Rewrite this shit!
-    dS -= if dS > 0 then a else -a
+    if speed > 0 then a else -a
 
 
-    # Calculate angle and angle increment
+  # Get angle increment
+  getNewAngle: (a0, R, speed) ->
+    dFi = Math.round(speed) / R
+    fi = a0 + dFi
+    2 * Math.PI + fi % (4 * Math.PI)
 
-    dFi = Math.round(dS) / R
-    fi = y.angle + dFi
-
-
-    # Remember calculated vars
-
-    y.angle       = 2 * Math.PI + fi % (4 * Math.PI)
-                                        # 0 <= y.angle <= 2 pi
-    y.position   += Math.round(dS)      # position: Integer
-    y.speed       = dS                  # speed: Float
-
-
-    # Rotate, move and redraw Yoba
-    y.redraw()
-
-
-
-  # If all Yobas stopped, change flag
-  allYobasStopped = true
-  for yb in Yoba.allYobas
-    if ~~(Math.abs(yb.speed)) != 0
-      allYobasStopped = false
-      break
-
-
-  # If all Yobas stopped
-  if allYobasStopped
-    # Stop rendering Yobas
-    Yoba.stopScript()
+}

@@ -2,10 +2,10 @@
 # Canvas and rendering methods
 canvas = {
 
-  canvasElement:      null
-  ctx:                null
-  width:              0
-  height:             0
+  canvasElement:  null
+  ctx:            null
+  width:          0
+  height:         0
 
 
   # Is canvas initialized?

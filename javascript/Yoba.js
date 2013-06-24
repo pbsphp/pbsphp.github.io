@@ -2,7 +2,7 @@
 var Yoba;
 
 Yoba = (function() {
-  var getMass, getSkin, registerYoba;
+  var allYobas, getMass, getRandomFrom, getSkin, registerYoba;
 
   function Yoba(params) {
     var defaultRadius, defaultSpeed, yobaImage;
@@ -24,7 +24,7 @@ Yoba = (function() {
   }
 
   registerYoba = function(self) {
-    return Yoba.allYobas.push(self);
+    return allYobas.push(self);
   };
 
   getMass = function(R) {
@@ -33,11 +33,15 @@ Yoba = (function() {
     return ~~((4 / 3) * Math.PI * R * R * R * p);
   };
 
+  getRandomFrom = function(array) {
+    return array[~~(Math.random() * array.length)];
+  };
+
   getSkin = function() {
     var path, skins;
     path = "skins/";
     skins = ["1.png", "2.png", "3.png", "4.png"];
-    return path + skins[~~(Math.random() * skins.length)];
+    return path + getRandomFrom(skins);
   };
 
   Yoba.prototype.redraw = function() {
@@ -61,16 +65,20 @@ Yoba = (function() {
     }
   };
 
-  Yoba.allYobas = [];
+  allYobas = [];
+
+  Yoba.getAllYobas = function() {
+    return allYobas;
+  };
 
   Yoba.removeYobas = function() {
-    return this.allYobas = [];
+    return allYobas = [];
   };
 
   Yoba.getSwearword = function() {
     var swearwords;
     swearwords = ["Sooqa", "Krysa", "LOL", "Tvoi mama ebal", "U tebya bugurt", "U vas popka prigorela", "Butthurt", "Lalka", "Sasai", "Pidor"];
-    return swearwords[~~(Math.random() * swearwords.length)];
+    return getRandomFrom(swearwords);
   };
 
   Yoba.stopScript = function() {
