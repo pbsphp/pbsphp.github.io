@@ -40,7 +40,7 @@ Yoba = (function() {
   getSkin = function() {
     var path, skins;
     path = "skins/";
-    skins = ["1.png", "2.png", "3.png", "4.png"];
+    skins = ["1.png", "2.png", "3.png", "4.png", "5.png"];
     return path + getRandomFrom(skins);
   };
 

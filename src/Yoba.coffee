@@ -47,10 +47,11 @@ class Yoba
   getSkin = ->
     path = "skins/"
     skins = [
-      "1.png",
-      "2.png",
-      "3.png",
+      "1.png"
+      "2.png"
+      "3.png"
       "4.png"
+      "5.png"
     ]
 
     path + getRandomFrom(skins)
@@ -102,15 +103,15 @@ class Yoba
   @getSwearword = ->
 
     swearwords = [
-      "Sooqa",
-      "Krysa",
-      "LOL",
-      "Tvoi mama ebal",
-      "U tebya bugurt",
-      "U vas popka prigorela",
-      "Butthurt",
-      "Lalka",
-      "Sasai",
+      "Sooqa"
+      "Krysa"
+      "LOL"
+      "Tvoi mama ebal"
+      "U tebya bugurt"
+      "U vas popka prigorela"
+      "Butthurt"
+      "Lalka"
+      "Sasai"
       "Pidor"
     ]
 
