@@ -124,10 +124,10 @@ handler = {
 
 
     # If all Yobas stopped, change flag
-    allYobasStopped = true
+    allYobasStopped = yes
     for yb in Yoba.getAllYobas()
       if ~~(Math.abs(yb.speed)) != 0
-        allYobasStopped = false
+        allYobasStopped = no
         break
 
 
