@@ -1,6 +1,6 @@
 
 all:
-	coffee -b --compile --output ./javascript ./src
+	coffee --lint -b --compile --output ./javascript ./src
 
 
 clean:
