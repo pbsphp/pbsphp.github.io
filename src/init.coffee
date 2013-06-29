@@ -1,8 +1,6 @@
 
-drawYobas = ->
-  # Initialize canvas, creates and starts Yobas rendering
-
-  # Clear variables after last using
+# Initialize canvas, creates and starts Yobas rendering
+init = ->
 
   # Stop render Yobas if needed
   handler.stop()
@@ -12,10 +10,11 @@ drawYobas = ->
 
   # Initialize canvas
   unless canvas.isInitialized()
+    # If isn't initialized
     canvas.initialize(document.getElementById("yoba_track"))
 
   else
-    # Clear screen (canvas element)
+    # Else, clear canvas
     canvas.clear()
 
   # Create Yobas
@@ -24,6 +23,5 @@ drawYobas = ->
   new Yoba({ radius: 40, position: 400 })
   new Yoba({ radius: 60, position: 100 })
 
-
-  # Start render Yobas
+  # Start rendering Yobas
   handler.start()

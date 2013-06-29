@@ -86,10 +86,8 @@ handler = {
         v2 = bumpedYoba.speed
 
         # Get speeds after bump
-        speeds = handler.getSpeedsAfterBump(m1, v1, m2, v2)
+        [dS, bumpedYoba.speed] = handler.getSpeedsAfterBump(m1, v1, m2, v2)
 
-        dS = speeds[0]
-        bumpedYoba.speed = speeds[1]
 
         # Yoba says
         y.startSpeek()

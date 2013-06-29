@@ -71,5 +71,4 @@ canvas = {
   showTextAt: (text, X, Y) ->
     canvas.ctx.fillText(text, X, Y)
 
-
 }
