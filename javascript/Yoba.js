@@ -65,6 +65,22 @@ Yoba = (function() {
     }
   };
 
+  Yoba.prototype.rightPoint = function() {
+    return this.position + this.radius + this.speed;
+  };
+
+  Yoba.prototype.leftPoint = function() {
+    return this.position - this.radius + this.speed;
+  };
+
+  Yoba.prototype.atRightBorder = function() {
+    return this.rightPoint() >= canvas.width && this.speed > 0;
+  };
+
+  Yoba.prototype.atLeftBorder = function() {
+    return this.leftPoint() <= 0 && this.speed < 0;
+  };
+
   allYobas = [];
 
   Yoba.getAllYobas = function() {
@@ -81,9 +97,21 @@ Yoba = (function() {
     return getRandomFrom(swearwords);
   };
 
-  Yoba.stopScript = function() {
-    handler.stop();
-    return setTimeout(canvas.showSasai, 1000);
+  Yoba.stopScriptIfAllStopped = function() {
+    var allYobasStopped, y, _i, _len, _ref;
+    allYobasStopped = true;
+    _ref = Yoba.getAllYobas();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      y = _ref[_i];
+      if (~~y.speed !== 0) {
+        allYobasStopped = false;
+        break;
+      }
+    }
+    if (allYobasStopped) {
+      Handler.stop();
+      return setTimeout(canvas.showSasai, 1000);
+    }
   };
 
   return Yoba;

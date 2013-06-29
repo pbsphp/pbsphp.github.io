@@ -3,7 +3,7 @@
 init = ->
 
   # Stop render Yobas if needed
-  handler.stop()
+  Handler.stop()
 
   # Remove old Yobas
   Yoba.removeYobas()
@@ -24,4 +24,4 @@ init = ->
   new Yoba({ radius: 60, position: 100 })
 
   # Start rendering Yobas
-  handler.start()
+  Handler.start()

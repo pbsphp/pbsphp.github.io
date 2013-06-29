@@ -2,7 +2,7 @@
 var init;
 
 init = function() {
-  handler.stop();
+  Handler.stop();
   Yoba.removeYobas();
   if (!canvas.isInitialized()) {
     canvas.initialize(document.getElementById("yoba_track"));
@@ -21,5 +21,5 @@ init = function() {
     radius: 60,
     position: 100
   });
-  return handler.start();
+  return Handler.start();
 };

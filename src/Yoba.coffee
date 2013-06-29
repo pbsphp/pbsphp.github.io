@@ -82,6 +82,27 @@ class Yoba
 
 
 
+    ##!!!
+  rightPoint: ->
+    this.position + this.radius + this.speed
+
+  leftPoint: ->
+    this.position - this.radius + this.speed
+
+
+  # Is Yoba at right border?
+  # At, on or in?
+  atRightBorder: ->
+    # TODO: speed > 0 as method
+    this.rightPoint() >= canvas.width && this.speed > 0
+
+
+  # Is Yoba at right border?
+  atLeftBorder: ->
+    this.leftPoint() <= 0 && this.speed < 0
+
+
+
   # Class members and methods
 
   # All Yobas
@@ -118,7 +139,18 @@ class Yoba
     getRandomFrom(swearwords)
 
 
-  # Stop script and render "sasai lolka"
-  @stopScript = ->
-    handler.stop()
-    setTimeout(canvas.showSasai, 1000)
+
+  # If all yobas stopped, stop script
+  @stopScriptIfAllStopped = ->
+
+    # If all Yobas stopped, change flag
+    allYobasStopped = yes
+    for y in Yoba.getAllYobas()
+      if ~~y.speed != 0
+        allYobasStopped = no
+        break
+
+    # If all Yobas stopped, stop script and show message
+    if allYobasStopped
+      Handler.stop()
+      setTimeout(canvas.showSasai, 1000)
