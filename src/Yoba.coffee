@@ -103,6 +103,26 @@ class Yoba
 
 
 
+  # Get yoba object that was bumped by this
+  getBumpedYoba: ->
+    currentYoba = this
+    # Check positions of each Yoba
+    for anotherYoba in Yoba.getAllYobas()
+      if anotherYoba isnt currentYoba
+        oR = anotherYoba.rightPoint()
+        oL = anotherYoba.leftPoint()
+        yR = currentYoba.rightPoint()
+        yL = currentYoba.leftPoint()
+
+        # If there will be collision
+        if oL <= yR <= oR || oL <= yL <= oR
+          return anotherYoba
+
+    # If not founded
+    return null
+
+
+
   # Class members and methods
 
   # All Yobas

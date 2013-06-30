@@ -13,50 +13,30 @@ Handler = {
     return Handler.scriptIntervalID = setInterval(Handler.main, Handler.delay);
   },
   main: function() {
-    var HEIGHT, R, WIDTH, X0, Y0, anotherYoba, bumpedYoba, currentYoba, i, m1, m2, oL, oR, speed, v1, v2, yL, yR, yobaIndex, _i, _j, _len, _len1, _ref, _ref1, _ref2;
-    WIDTH = canvas.width;
-    HEIGHT = canvas.height;
+    var bumpedYoba, currentYoba, m1, m2, v1, v2, _i, _len, _ref, _ref1;
     canvas.clear();
     _ref = Yoba.getAllYobas();
-    for (yobaIndex = _i = 0, _len = _ref.length; _i < _len; yobaIndex = ++_i) {
-      currentYoba = _ref[yobaIndex];
-      X0 = currentYoba.position - currentYoba.radius;
-      Y0 = HEIGHT - 2 * currentYoba.radius;
-      R = currentYoba.radius;
-      speed = currentYoba.speed;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      currentYoba = _ref[_i];
       if (currentYoba.atRightBorder()) {
-        speed = -Math.abs(speed);
+        currentYoba.speed = -Math.abs(currentYoba.speed);
       } else if (currentYoba.atLeftBorder()) {
-        speed = +Math.abs(speed);
+        currentYoba.speed = +Math.abs(currentYoba.speed);
       }
-      bumpedYoba = null;
-      _ref1 = Yoba.getAllYobas();
-      for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-        anotherYoba = _ref1[i];
-        if (i !== yobaIndex) {
-          oR = anotherYoba.rightPoint();
-          oL = anotherYoba.leftPoint();
-          yR = currentYoba.rightPoint();
-          yL = currentYoba.leftPoint();
-          if ((oL <= yR && yR <= oR) || (oL <= yL && yL <= oR)) {
-            bumpedYoba = anotherYoba;
-          }
-        }
-      }
+      bumpedYoba = currentYoba.getBumpedYoba();
       if (bumpedYoba) {
         m1 = currentYoba.mass;
-        m2 = bumpedYoba.mass;
         v1 = currentYoba.speed;
+        m2 = bumpedYoba.mass;
         v2 = bumpedYoba.speed;
-        _ref2 = Handler.getSpeedsAfterBump(m1, v1, m2, v2), speed = _ref2[0], bumpedYoba.speed = _ref2[1];
+        _ref1 = Handler.getSpeedsAfterBump(m1, v1, m2, v2), currentYoba.speed = _ref1[0], bumpedYoba.speed = _ref1[1];
         currentYoba.startSpeek();
         bumpedYoba.startSpeek();
       }
       currentYoba.continueSpeek();
-      speed -= Handler.getFrictionalAcceleration(currentYoba.radius, currentYoba.mass, speed);
-      currentYoba.angle = Handler.getNewAngle(currentYoba.angle, R, speed);
-      currentYoba.position += Math.round(speed);
-      currentYoba.speed = speed;
+      currentYoba.speed -= Handler.getFrictionalAcceleration(currentYoba.radius, currentYoba.mass, currentYoba.speed);
+      currentYoba.angle = Handler.getNewAngle(currentYoba.angle, currentYoba.radius, currentYoba.speed);
+      currentYoba.position += Math.round(currentYoba.speed);
       currentYoba.redraw();
     }
     return Yoba.stopScriptIfAllStopped();

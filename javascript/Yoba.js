@@ -81,6 +81,25 @@ Yoba = (function() {
     return this.leftPoint() <= 0 && this.speed < 0;
   };
 
+  Yoba.prototype.getBumpedYoba = function() {
+    var anotherYoba, currentYoba, oL, oR, yL, yR, _i, _len, _ref;
+    currentYoba = this;
+    _ref = Yoba.getAllYobas();
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      anotherYoba = _ref[_i];
+      if (anotherYoba !== currentYoba) {
+        oR = anotherYoba.rightPoint();
+        oL = anotherYoba.leftPoint();
+        yR = currentYoba.rightPoint();
+        yL = currentYoba.leftPoint();
+        if ((oL <= yR && yR <= oR) || (oL <= yL && yL <= oR)) {
+          return anotherYoba;
+        }
+      }
+    }
+    return null;
+  };
+
   allYobas = [];
 
   Yoba.getAllYobas = function() {

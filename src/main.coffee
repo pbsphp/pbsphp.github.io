@@ -24,64 +24,37 @@ Handler = {
   # Called every 60ms
   main: ->
 
-    # Aliases
-    WIDTH     = canvas.width
-    HEIGHT    = canvas.height
-
-
     # Clear screen before rendering
     canvas.clear()
 
 
     # For each Yoba calculate speed
 
-    for currentYoba, yobaIndex in Yoba.getAllYobas()
-
-      # Aliases
-      X0 = currentYoba.position - currentYoba.radius
-      Y0 = HEIGHT - 2 * currentYoba.radius
-      R  = currentYoba.radius
-      speed = currentYoba.speed
-
+    for currentYoba in Yoba.getAllYobas()
 
       # Detect border
 
-      # TODO: currentYoba.atRightBorder()
       if currentYoba.atRightBorder()
         # Right border, move left
-        speed = - Math.abs(speed)
+        currentYoba.speed = -Math.abs(currentYoba.speed)
       else if currentYoba.atLeftBorder()
         # Left border, move right
-        speed = + Math.abs(speed)
+        currentYoba.speed = +Math.abs(currentYoba.speed)
 
 
-      # Detect other Yobas on the way
 
-      bumpedYoba = null   # The nearby Yoba, which will be bumped
-      # Check positions of each Yoba
-      for anotherYoba, i in Yoba.getAllYobas()
-        if i != yobaIndex
-          oR = anotherYoba.rightPoint()
-          oL = anotherYoba.leftPoint()
-          yR = currentYoba.rightPoint()
-          yL = currentYoba.leftPoint()
-
-          # If there will be collision
-          if oL <= yR <= oR || oL <= yL <= oR
-            bumpedYoba = anotherYoba
-
-
-      # If there is nearby Yoba
+      # If there is Yoba that will be bumped
+      # Calculate params after bump for this two yobas
+      bumpedYoba = currentYoba.getBumpedYoba()
       if bumpedYoba
-        # Calculate speeds after bump
 
         m1 = currentYoba.mass
-        m2 = bumpedYoba.mass
         v1 = currentYoba.speed
+        m2 = bumpedYoba.mass
         v2 = bumpedYoba.speed
 
         # Get speeds after bump
-        [ speed, bumpedYoba.speed ] = Handler.getSpeedsAfterBump(m1, v1, m2, v2)
+        [ currentYoba.speed, bumpedYoba.speed ] = Handler.getSpeedsAfterBump(m1, v1, m2, v2)
 
 
         # Yoba says
@@ -95,15 +68,20 @@ Handler = {
 
 
       # Determine the acceleration due to the frictional force
-      speed -= Handler.getFrictionalAcceleration(currentYoba.radius, currentYoba.mass, speed)
+      currentYoba.speed -= Handler.getFrictionalAcceleration(
+                                                      currentYoba.radius,
+                                                      currentYoba.mass,
+                                                      currentYoba.speed )
 
 
       # Remember calculated vars
 
-      currentYoba.angle       = Handler.getNewAngle(currentYoba.angle, R, speed)
+      currentYoba.angle       = Handler.getNewAngle(  currentYoba.angle,
+                                                      currentYoba.radius,
+                                                      currentYoba.speed )
                                                     # 0 <= angle <= 2 pi
-      currentYoba.position   += Math.round(speed)      # position: Integer
-      currentYoba.speed       = speed               # speed: Float
+      currentYoba.position   += Math.round(currentYoba.speed)
+                                                    # position :: int
 
 
       # Rotate, move and redraw Yoba
