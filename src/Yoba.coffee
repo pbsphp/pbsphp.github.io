@@ -107,16 +107,15 @@ class Yoba
   getBumpedYoba: ->
     currentYoba = this
     # Check positions of each Yoba
-    for anotherYoba in Yoba.getAllYobas()
-      if anotherYoba isnt currentYoba
-        oR = anotherYoba.rightPoint()
-        oL = anotherYoba.leftPoint()
-        yR = currentYoba.rightPoint()
-        yL = currentYoba.leftPoint()
+    for anotherYoba in Yoba.getAllYobas() when anotherYoba isnt currentYoba
+      oR = anotherYoba.rightPoint()
+      oL = anotherYoba.leftPoint()
+      yR = currentYoba.rightPoint()
+      yL = currentYoba.leftPoint()
 
-        # If there will be collision
-        if oL <= yR <= oR || oL <= yL <= oR
-          return anotherYoba
+      # If there will be collision
+      if oL <= yR <= oR || oL <= yL <= oR
+        return anotherYoba
 
     # If not founded
     return null

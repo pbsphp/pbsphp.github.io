@@ -13,7 +13,7 @@ Handler = {
     return Handler.scriptIntervalID = setInterval(Handler.main, Handler.delay);
   },
   main: function() {
-    var bumpedYoba, currentYoba, m1, m2, v1, v2, _i, _len, _ref, _ref1;
+    var bumpedYoba, currentYoba, _i, _len, _ref, _ref1;
     canvas.clear();
     _ref = Yoba.getAllYobas();
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -25,11 +25,7 @@ Handler = {
       }
       bumpedYoba = currentYoba.getBumpedYoba();
       if (bumpedYoba) {
-        m1 = currentYoba.mass;
-        v1 = currentYoba.speed;
-        m2 = bumpedYoba.mass;
-        v2 = bumpedYoba.speed;
-        _ref1 = Handler.getSpeedsAfterBump(m1, v1, m2, v2), currentYoba.speed = _ref1[0], bumpedYoba.speed = _ref1[1];
+        _ref1 = Handler.getSpeedsAfterBump(currentYoba.mass, currentYoba.speed, bumpedYoba.mass, bumpedYoba.speed), currentYoba.speed = _ref1[0], bumpedYoba.speed = _ref1[1];
         currentYoba.startSpeek();
         bumpedYoba.startSpeek();
       }
@@ -49,11 +45,7 @@ Handler = {
     f = 0.3;
     N = 9.8 * M;
     a = (N * (f / R)) / R;
-    if (speed > 0) {
-      return a;
-    } else {
-      return -a;
-    }
+    return (speed > 0 ? a : -a);
   },
   getNewAngle: function(a0, R, speed) {
     var dFi, fi;

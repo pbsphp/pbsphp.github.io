@@ -87,14 +87,15 @@ Yoba = (function() {
     _ref = Yoba.getAllYobas();
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       anotherYoba = _ref[_i];
-      if (anotherYoba !== currentYoba) {
-        oR = anotherYoba.rightPoint();
-        oL = anotherYoba.leftPoint();
-        yR = currentYoba.rightPoint();
-        yL = currentYoba.leftPoint();
-        if ((oL <= yR && yR <= oR) || (oL <= yL && yL <= oR)) {
-          return anotherYoba;
-        }
+      if (!(anotherYoba !== currentYoba)) {
+        continue;
+      }
+      oR = anotherYoba.rightPoint();
+      oL = anotherYoba.leftPoint();
+      yR = currentYoba.rightPoint();
+      yL = currentYoba.leftPoint();
+      if ((oL <= yR && yR <= oR) || (oL <= yL && yL <= oR)) {
+        return anotherYoba;
       }
     }
     return null;

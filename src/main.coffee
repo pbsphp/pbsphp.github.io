@@ -48,13 +48,12 @@ Handler = {
       bumpedYoba = currentYoba.getBumpedYoba()
       if bumpedYoba
 
-        m1 = currentYoba.mass
-        v1 = currentYoba.speed
-        m2 = bumpedYoba.mass
-        v2 = bumpedYoba.speed
-
         # Get speeds after bump
-        [ currentYoba.speed, bumpedYoba.speed ] = Handler.getSpeedsAfterBump(m1, v1, m2, v2)
+        [ currentYoba.speed, bumpedYoba.speed ] = Handler.getSpeedsAfterBump(
+                                                            currentYoba.mass,
+                                                            currentYoba.speed,
+                                                            bumpedYoba.mass,
+                                                            bumpedYoba.speed )
 
 
         # Yoba says
@@ -79,7 +78,7 @@ Handler = {
       currentYoba.angle       = Handler.getNewAngle(  currentYoba.angle,
                                                       currentYoba.radius,
                                                       currentYoba.speed )
-                                                    # 0 <= angle <= 2 pi
+
       currentYoba.position   += Math.round(currentYoba.speed)
                                                     # position :: int
 
@@ -112,7 +111,7 @@ Handler = {
 
     a = (N * (f / R)) / R
 
-    if speed > 0 then a else -a
+    return( if speed > 0 then a else -a )
 
 
   # Get angle increment
