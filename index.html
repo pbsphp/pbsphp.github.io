@@ -26,9 +26,14 @@
         text-align: center;
       }
 
-      .invisible {
+      .hidden {
         color: white;
       }
+
+      .invisible {
+        display: none;
+      }
+
 
     </style>
 
@@ -40,12 +45,20 @@
 
   </head>
   <body onload="init()">
-    <!-- I hate flash :3 -->
+    <div id="preload_field" class="invisible">
+      <!-- Dirty hack -->
+      <img src="skins/1.png" />
+      <img src="skins/2.png" />
+      <img src="skins/3.png" />
+      <img src="skins/4.png" />
+      <img src="skins/5.png" />
+    </div>
+
     <div id="canvas_field">
       <canvas id="yoba_track" width="1000" height="150" onclick="init()"></canvas>
     </div>
     <br />
     <div id="notice" class="notice"> Я знаю, что Йобы отталкиваются не ударяясь. Это yoba-взаимодействие ;-3 </div>
-    <div id="invisible" class="notice invisible"> ... ну если честно, мне просто лень фиксить этот баг, Руслан. </div>
+    <div id="invisible" class="notice hidden"> ... ну если честно, мне просто лень фиксить этот баг. </div>
   </body>
 </html>
